@@ -1,0 +1,47 @@
+version: '3'
+
+networks:
+  my_network:
+    driver: bridge
+
+
+services:
+  llm_inference_service:
+    networks:
+      - my_network
+    image: ghcr.io/huggingface/text-generation-inference:latest
+    runtime: nvidia
+    # --gpus all is not supported in docker-compose, so ...
+    ports:
+      - "8080:8080"
+    environment:
+      - DISABLE_EXLLAMA=False
+    volumes:
+      - ~/llm_data:/data
+    command: >
+      --model-id=TheBloke/Llama-2-13b-Chat-GPTQ
+      --revision=main
+      --port 8080
+      --quantize=gptq
+      --max-input-length=3100
+      --max-batch-prefill-tokens=3100
+      --max-total-tokens=4096
+      --max-batch-total-tokens=4096
+      --validation-workers=1
+      --max-concurrent-requests=1
+      --cuda-memory-fraction=0.9
+
+  flask-openai-and-hf-app:
+    networks:
+      - my_network
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
+      args:
+        - TEXT_SPLITTER=semantic_splitter # {semantic_splitter, character_splitter}
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - llm_inference_service

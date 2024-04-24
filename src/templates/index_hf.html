@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciklum GenAI-Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f1f1f1;
+        }
+
+        h1, h4 {
+            color: #333;
+        }
+
+        #chat-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        #chatbox {
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column; /* Changed to column layout */
+        }
+
+        .userText, .botText {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 8px;
+            word-wrap: break-word;
+        }
+
+        .userText {
+            background-color: #3498db;
+            color: #fff;
+            align-self: flex-start; /* Changed to left */
+            text-align: left; /* Changed to left */
+            margin-right: auto; /* Added to shift user message to the right */
+        }
+
+        .botText {
+            background-color: #2ecc71;
+            color: #fff;
+            align-self: flex-end; /* Changed to right */
+            text-align: right; /* Changed to right */
+            margin-left: auto; /* Added to shift bot message to the left */
+        }
+
+        #userInput {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #textInput {
+            width: 75%;
+            padding: 8px;
+            border: none;
+            border-bottom: 2px solid #333;
+            font-family: 'monospace';
+            font-size: 16px;
+            outline: none;
+        }
+
+        #sendButton {
+            width: 20%;
+            padding: 8px;
+            border: none;
+            background-color: #3498db;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <h1 align="center"><b>Ciklum HF Upskilling Gen-AI ChatBot</b></h1>
+    <h4 align="center"><b>Please start your personalized interaction with the chatbot</b></h4>
+    <div id="chatbox"></div>
+    <div id="userInput">
+        <input id="textInput" type="text" name="msg" placeholder="Type your message...">
+        <button id="sendButton" onclick="getBotResponse()">Send</button>
+    </div>
+</div>
+
+<script>
+
+function getBotResponse() {
+    var rawText = document.getElementById("textInput").value;
+    var index = "hf";
+
+    var userHtml = '<div class="message userText"><p>' + rawText + "</p></div>";
+    document.getElementById("textInput").value = "";
+    document.getElementById("chatbox").innerHTML += userHtml;
+    document.getElementById("chatbox").scrollTop = document.getElementById("chatbox").scrollHeight;
+
+    console.log(JSON.stringify({ msg: rawText, index: index }))
+
+    fetch("/generate", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ msg: rawText, index: index }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        var botHtml = '<div class="message botText"><p>' + data.response + "</p></div>";
+        document.getElementById("chatbox").innerHTML += botHtml;
+        document.getElementById("chatbox").scrollTop = document.getElementById("chatbox").scrollHeight;
+    })
+    .catch(error => {
+        console.error("Error:", error.message);
+    });
+}
+
+$("#textInput").keypress(function (e) {
+    if (e.which == 13) {
+        getBotResponse();
+    }
+});
+
+</script>
+
+</body>
+</html>

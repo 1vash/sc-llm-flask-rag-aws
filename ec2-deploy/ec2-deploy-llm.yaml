@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: EC2 Instance
+Parameters:
+  KeyName:
+   Description: Key Pair LLM Demo Instance
+   Type: AWS::EC2::KeyPair::KeyName
+  RootVolumeSize:
+    Type: Number
+    Default: 100
+    Description: Size of the root volume in gigabytes
+Mappings:
+  RegionToAmiId:
+    us-east-1:
+      AMI: ami-0d145bce97ab71de8
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub ${AWS::StackName}-sg
+      GroupDescription: Security group for EC2 instance
+      SecurityGroupIngress:
+        # SSH
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        # LLM inference
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        # Flask Port
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: g5.xlarge
+      ImageId: !FindInMap [RegionToAmiId, !Ref AWS::Region, AMI]
+      KeyName: !Ref KeyName
+      BlockDeviceMappings:
+              - DeviceName: /dev/xvda
+                Ebs:
+                  VolumeSize: !Ref RootVolumeSize
+                  VolumeType: gp3  # You can change this to your preferred volume type
+
+      "Tags" : [
+        {"Key" : "Name", "Value" : "LLM-Demo-Instance"},
+      ]
+      SecurityGroups:
+        - Ref: SecurityGroup
