@@ -3,11 +3,19 @@
 Hi, pleased to meet you all.
 
 Today We will deploy Llama-2-13B open-source LLM (can be any other HF LLM)  on an AWS EC2 instance armed with a robust 24GB GPU 
-and using Cloud Formation YAML script we will establish infrastructure for it. 
+and using Cloud Formation YAML script we will establish the given infrastructure. 
 
 We will Pack, build and run everything as a single docker-compose file which provides communication 
 between GenAI RAG application with both open-source GPU powered LLM TGI inference and proprietary OpenAI LLM API 
 for comparison purpose
+
+<img src="./imgs/ciklum-gen-ai-sc-event.png" width="50%">
+
+This code release is being done as part of the speakers corner session that was conducted on 16th April 2024
+https://www.landing.ciklum.com/sc-architecting-scalable-ai
+
+- [Ciklum](https://www.ciklum.com/)
+
 
 So, let's start
 
@@ -67,7 +75,3 @@ docker-compose up
 
 ------------------------
 
-This code release is being done as part of speakers corner session that was conducted on 16th April 2024
-https://www.landing.ciklum.com/sc-architecting-scalable-ai
-
-- [Ciklum](https://www.ciklum.com/)
