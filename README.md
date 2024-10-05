@@ -16,6 +16,7 @@ https://www.landing.ciklum.com/sc-architecting-scalable-ai
 
 - [Ciklum](https://www.ciklum.com/)
 
+- [Youtube link](https://youtu.be/75Z-ei2d10k?si=VU6is3mJ1pH04VEr&t=824)
 
 So, let's start
 
@@ -63,8 +64,15 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 ### Run docker-compose which includes LLM inference instance and Flask GenAI RAG app
 ```bash
+cd llm-flask-rag-aws
 docker-compose build
 docker-compose up
+```
+
+### Now, you can start communicate with both chats (openai & hf llama-2 13b) from the browser
+```
+http://{PUBLIC_IP}:5000/hf
+http://{PUBLIC_IP}:5000/openai
 ```
 
 ### TGI overrides and set MAX_TOTAL_TOKENS automatically for Flash Attention models
