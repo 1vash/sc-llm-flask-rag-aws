@@ -1,6 +1,6 @@
 """
 Queries:
-1. Explain Transformers as in the article
+1. List all authors of Systematic Biases in LLM Simulations of Debates article
 2. My name is Ivan
 3. What did I say?
 4. What is the capital of France?
@@ -54,7 +54,7 @@ class RagGeneratorMixin:
 
     @staticmethod
     def get_chunks(embeddings_model, splitter):
-        pdf_file_url = 'https://arxiv.org/pdf/1706.03762.pdf'
+        pdf_file_url = 'https://arxiv.org/pdf/2402.04049'
         loader = PyPDFLoader(pdf_file_url)
 
         print('Text Splitter Name:', splitter)
@@ -79,11 +79,11 @@ class RagGeneratorMixin:
 
 class OpenAIRagLLM(RagGeneratorMixin):
     def __init__(self, text_splitter):
-        self.llm = self.connect_to_model('gpt-3.5-turbo')
+        self.llm = self.connect_to_model('gpt-4o-mini')
         self.custom_chat_history = CustomChatBufferHistory(human_prefix_start='Human:', ai_prefix_start='AI:')
         # If you don't know the answer, say 'I don't know' is added to compare model generation capabilities only.
         self.prompt_template = """
-        You are a helpful, respectful and honest assistant. You help to answer questions regarding `Attention is all you need` article.
+        You are a helpful, respectful and honest assistant. You help to answer questions regarding `Systematic Biases in LLM Simulations of Debates` article.
         Answer the following Question based on the Context only. Only answer from the Context. If you don't know the answer, say 'I don't know'.
  
         Chat history: {chat_history}
@@ -123,7 +123,7 @@ class HfRagLlm(RagGeneratorMixin):
         self.custom_chat_history = CustomChatBufferHistory(human_prefix_start='[INST]', human_prefix_end='[/INST]',
                                                            ai_prefix_start='', ai_prefix_end='')
         self.prompt_template = """<s>[INST]<<SYS>>
-        You are a helpful, respectful and honest assistant. You help to answer questions regarding `Attention is all you need` article.
+        You are a helpful, respectful and honest assistant. You help to answer questions regarding `Systematic Biases in LLM Simulations of Debates` article.
         Answer the following Question based on the CONTEXT only provided in the <context> tag. Only answer from the Context. If you don't know the answer, say 'I don't know'.
         The format of the answer is: `Final Answer: <Put your answer here>`.
         <</SYS>>
