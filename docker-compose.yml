@@ -18,6 +18,7 @@ services:
       - DISABLE_EXLLAMA=False
     volumes:
       - ~/llm_data:/data
+    # TGI batch endpoint allows to handle multiple input requests together
     command: >
       --model-id=TheBloke/Llama-2-13b-Chat-GPTQ
       --revision=main
