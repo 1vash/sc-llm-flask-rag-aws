@@ -50,10 +50,12 @@ PUBLIC_IP=$(echo "$PUBLIC_IP" | sed 's/\./-/g')
 ssh -i llm-key.pem ec2-user@ec2-${PUBLIC_IP}.compute-1.amazonaws.com
 ```
 
-### Copy all the files from local pc to remote (git alternative)
+### Create the folder and copy all the repo files from local to remote (git clone alternative)
 Required to avoid messing up with git credentials during the demo 
 ```bash
-scp -r -i llm-flask-rag-aws/llm-key.pem llm-flask-rag-aws ec2-user@ec2-${PUBLIC_IP}.compute-1.amazonaws.com:~/
+cd ./sc-llm-flask-rag-aws
+ssh -i llm-key.pem ec2-user@ec2-${PUBLIC_IP}.compute-1.amazonaws.com 'mkdir -p ~/llm-flask-rag-aws'
+rsync -av --exclude '.git' --exclude 'venv' --exclude '.idea' -e "ssh -i llm-key.pem" ./ ec2-user@ec2-${PUBLIC_IP}.compute-1.amazonaws.com:~/llm-flask-rag-aws
 ```
 
 ### Install Docker-compose
